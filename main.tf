@@ -4,18 +4,23 @@ provider "google" {
   region  = var.region
   zone    = var.zone
 }
+resource "google_storage_bucket" "auto-expire" {
+  name          = "no-public-access-bucket"
+  location      = "US"
+  force_destroy = true
+}
 
 # Creación de la cuenta de servicio
-resource "google_service_account" "my_service_account" {
-  account_id   = "terraform-fitquesd-service"
-  display_name = "terraform-service-account"
-}
+#resource "google_service_account" "my_service_account" {
+#  account_id   = "terraform-fitquesd-service"
+#  display_name = "terraform-service-account"
+#}
 
-resource "google_project_iam_member" "service_account_member" {
-  project = var.project_id
-  role    = "roles/owner"  # Cambia esto al rol que desees asignar
-  member  = "serviceAccount:vibrant-mantis-392013@appspot.gserviceaccount.com"
-}
+#resource "google_project_iam_member" "service_account_member" {
+#  project = var.project_id
+#  role    = "roles/owner"  # Cambia esto al rol que desees asignar
+#  member  = "serviceAccount:vibrant-mantis-392013@appspot.gserviceaccount.com"
+#}
 # # Configuración del presupuesto
 # resource "google_billing_budget" "my_budget" {
     
