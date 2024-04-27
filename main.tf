@@ -4,10 +4,11 @@ provider "google" {
   region  = var.region
   zone    = var.zone
 }
-resource "google_storage_bucket" "auto-expire" {
-  name          = "no-public-access-bucket"
-  location      = "US"
-  force_destroy = true
+resource "google_artifact_registry_repository" "example" {
+  repository_id = "mi-repositorio"
+  location      = "us-central1"  # Cambia la ubicación según tu preferencia
+
+  format = "DOCKER"  # Este ejemplo crea un repositorio de tipo Docker, pero también puedes usar otros formatos como MAVEN o NPM
 }
 
 # Creación de la cuenta de servicio
