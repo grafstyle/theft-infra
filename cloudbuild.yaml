@@ -14,7 +14,7 @@ steps:
         terraform init -backend=false
         terraform validate
       fi
-- id: "Plan"
+- id: "Plan-v2"
   name: 'hashicorp/terraform:1.0.11'
   entrypoint: 'sh'
   args:
