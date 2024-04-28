@@ -24,7 +24,7 @@ variable "name" {
   
 }
 
-variable "branch_name" {
+variable "BRANCH_NAME" {
   type = string
   default = "main"
   

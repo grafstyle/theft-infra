@@ -11,6 +11,26 @@ resource "google_artifact_registry_repository" "example" {
   format = "DOCKER"  # Este ejemplo crea un repositorio de tipo Docker, pero también puedes usar otros formatos como MAVEN o NPM
 }
 
+
+# Crear un bucket de Cloud Storage
+resource "google_storage_bucket" "mi_bucket" {
+  name          = "mi-bucket-de-logs"
+  location      = var.region  # Cambia esto a tu región preferida
+  force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
+}
+
+# Crear un trigger de Cloud Build y utilizar el bucket creado anteriormente
+resource "google_cloudbuild_trigger" "mi_trigger" {
+  trigger_template {
+    branch_name = "main"
+    repo_name   = "https://github.com/pRodriguez1630/terraform-infra-test.git"
+  }
+  
+  service_account = "joshua163011@gmail.com"
+  filename = "cloudbuild.yaml"
+
+  
+}
 # Creación de la cuenta de servicio
 #resource "google_service_account" "my_service_account" {
 #  account_id   = "terraform-fitquesd-service"
