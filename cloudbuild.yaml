@@ -6,7 +6,7 @@ steps:
   - 'https://github.com/pRodriguez1630/terraform-infra-test.git'
   - .
 
-- id: 'branch name'
+- id: 'branch name-2'
   name: gcr.io/cloud-builders/git
   entrypoint: 'sh'
   args:
@@ -83,4 +83,3 @@ steps:
         echo "*******************************************************************************"
       fi      
 
-      
