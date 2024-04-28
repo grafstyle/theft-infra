@@ -1,31 +1,32 @@
 steps:
-- id: 'clone repository'
-  name: 'gcr.io/cloud-builders/git'
+- name: 'Clone Repository'
+  id: 'Clone Repository'
   args:
   - clone
   - 'https://github.com/pRodriguez1630/terraform-infra-test.git'
+  #image: 'gcr.io/cloud-builders/git'
 
-- id: 'branch name-2'
-  name: gcr.io/cloud-builders/git
+- name: 'Branch Name'
+  id: 'Branch Name'
   entrypoint: 'sh'
   args:
   - '-c'
   - |
-      branch=main
-      git checkout ${branch}
-      echo "***********************"
-      git branch --show-current
-      echo "***********************"
+    branch=main
+    git checkout ${branch}
+    echo "***********************"
+    git branch --show-current
+    echo "***********************"
+  #image: 'gcr.io/cloud-builders/git'
 
-- id: 'Check Existing Resources'
-  name: 'hashicorp/terraform:1.0.0'
+- name: 'Check Existing Resources'
+  id: 'Check Existing Resources'
   entrypoint: 'sh'
   args:
   - '-c'
   - |
-    branch=main  # Replace with your main branch name
-
-    cd terraform-infra-test  # Assuming branch directory structure
+    branch=main
+    cd terraform-infra-test
 
     # Initialize Terraform
     terraform init || exit 1
@@ -51,91 +52,67 @@ steps:
         terraform apply -auto-approve
       fi
     done
-    
-- id: 'tf init'
-  name: 'hashicorp/terraform:1.0.0'
+  #image: 'hashicorp/terraform:1.0.0'
+
+- name: 'tf init and plan (Optional)'
+  id: 'tf init and plan (Optional)'
   entrypoint: 'sh'
   args:
   - '-c'
   - |
-   branch=main
-      if [ -d "terraform-infra-test" ]; then
-        cd terraform-infra-test}
-        terraform init
-      else
-        for dir in terraform-infra-test/*/
-        do
-          cd terraform-infra-test
-        
-          echo ""
-          echo "*************** TERRAFORM INIT ******************"
-          echo "******* At environment: ${env} ********"
-          echo "*************************************************"
-          terraform init || exit 1
-          cd ../../
-        done
-      fi
-
-
-- id: 'tf plan'
-  name: 'hashicorp/terraform:1.0.0'
-  entrypoint: 'sh'
-  args:
-  - '-c'
-  - |
-      branch=main
-      if [ -d "terraform-infra-test" ]; then
-        cd terraform-infra-test/${branch}
+    branch=main
+    if [ -d "terraform-infra-test" ]; then
+      cd terraform-infra-test
+      terraform init
+      terraform plan
+    else
+      for dir in terraform-infra-test*/; do
+        cd ${dir}
+        env=${dir%*/}
+        env=${env#*/}
+        echo ""
+        echo "*************** TERRAFOM INIT ******************"
+        echo "******* At environment: ${env} ********"
+        echo "*************************************************"
+        terraform init || exit 1
         terraform plan
-      else
-        for dir in terraform-infra-test*/
-        do
-          cd ${dir}
-          env=${dir%*/}
-          env=${env#*/}
-          echo ""
-          echo "*************** TERRAFOM PLAN ******************"
-          echo "******* At environment: ${env} ********"
-          echo "*************************************************"
-          terraform init
-          terraform plan 
-          cd ../../
-        done
-      fi
+        cd ../../
+      done
+    fi
+  #image: 'hashicorp/terraform:1.0.0'
 
-
-- id: 'tf apply'
-  name: 'hashicorp/terraform:1.0.0'
+- name: 'tf apply'
+  id: 'tf apply'
   entrypoint: 'sh'
   args:
   - '-c'
   - |
-      branch=main
-      if [ -d "terraform-infra-test" ]; then
-        cd terraform-infra-test
-        # Capture current state to `current_state.tfstate`
-        terraform show -no-color > current_state.tfstate
-        # Extract resource names from current state
-        resources=$(jq -r '.resources | keys[]' current_state.tfstate)
-        for resource in $resources; do
-          if grep -q "\"$resource\"" current_state.tfstate; then
-            echo "*******************************************************************************"
-            echo "Resource '${resource}' already exists in Terraform state."
-            echo "Skipping creation to avoid naming conflicts."
-            echo "*******************************************************************************"
-          else
-            echo "*******************************************************************************"
-            echo "Resource '${resource}' not found in Terraform state."
-            echo "Proceeding with creation..."
-            echo "*******************************************************************************"
-            terraform apply -auto-approve
-          fi
-        done
+    branch=main
+    if [ -d "terraform-infra-test" ]; then
+      cd terraform-infra-test
+      # Capture current state to `current_state.tfstate`
+      terraform show -no-color > current_state.tfstate
+      # Extract resource names from current state
+      resources=$(jq -r '.resources | keys[]' current_state.tfstate)
+      for resource in $resources; do
+        if grep -q "\"$resource\"" current_state.tfstate; then
+          echo "*******************************************************************************"
+          echo "Resource '${resource}' already exists in Terraform state."
+          echo "Skipping creation to avoid naming conflicts."
+          echo "*******************************************************************************"
+        else
+          echo "*******************************************************************************"
+          echo "Resource '${resource}' not found in Terraform state."
+          echo "Proceeding with creation..."
+          echo "*******************************************************************************"
+          terraform apply -auto-approve
+        fi
+      done
       terraform init
       terraform apply -auto-approve
-      else
-        echo "***************************** SKIPPING APPLYING *******************************"
-        echo "Branch '${branch}' does not represent an official environment."
-        echo "*******************************************************************************"
-        terraform apply -auto-approve
-      fi
+    else
+      echo "***************************** SKIPPING APPLYING *******************************"
+      echo "Branch '${branch}' does not represent an official environment."
+      echo "*******************************************************************************"
+    fi
+  #image: 'hashicorp/terraform:1.0.0'
