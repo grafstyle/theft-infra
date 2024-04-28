@@ -30,5 +30,5 @@ steps:
 options:
   machineType: 'E2_MEDIUM'
   env:
-    - 'GOOGLE_APPLICATION_CREDENTIALS=Users\Joshua Dario\Documents\rosy-acolyte-412215-15449e5d0d54'
+    # - 'GOOGLE_APPLICATION_CREDENTIALS=Users\Joshua Dario\Documents\rosy-acolyte-412215-15449e5d0d54'
     - 'TF_CLI_ARGS_init=-backend-config="bucket=mi-bucket-de-logs" -backend-config="prefix=terraform/state"'
