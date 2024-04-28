@@ -61,7 +61,8 @@ steps:
           echo "*************** TERRAFOM PLAN ******************"
           echo "******* At environment: ${env} ********"
           echo "*************************************************"
-          terraform plan || exit 1
+          terraform init
+          terraform plan 
           cd ../../
         done
       fi
