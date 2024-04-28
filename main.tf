@@ -6,7 +6,7 @@ provider "google" {
 }
 resource "google_artifact_registry_repository" "example" {
   repository_id = "mi-repositorio-v2"
-  location      = "us-central1"  # Cambia la ubicación según tu preferencia
+  location      = var.zone  # Cambia la ubicación según tu preferencia
 
   format = "DOCKER"  # Este ejemplo crea un repositorio de tipo Docker, pero también puedes usar otros formatos como MAVEN o NPM
 }
