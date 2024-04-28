@@ -4,12 +4,12 @@ provider "google" {
   region  = var.region
   zone    = var.zone
 }
-resource "google_artifact_registry_repository" "example" {
-  repository_id = "mi-repositorio-v2"
-  location      = var.zone  # Cambia la ubicación según tu preferencia
+# resource "google_artifact_registry_repository" "example" {
+#   repository_id = "mi-repositorio-v2"
+#   location      = var.zone  # Cambia la ubicación según tu preferencia
 
-  format = "DOCKER"  # Este ejemplo crea un repositorio de tipo Docker, pero también puedes usar otros formatos como MAVEN o NPM
-}
+#   format = "DOCKER"  # Este ejemplo crea un repositorio de tipo Docker, pero también puedes usar otros formatos como MAVEN o NPM
+# }
 
 
 # Crear un bucket de Cloud Storage
