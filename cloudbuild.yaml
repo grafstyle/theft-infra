@@ -9,7 +9,7 @@ steps:
 #       echo "$BRANCH_NAME"
 #       echo "***********************"
 
-- name: 'clone-github-repository'
+- name: 'clone-github-repo'
   id: 'clone-repo'
   entrypoint: 'bash'
   args:
