@@ -1,15 +1,15 @@
 steps:
-# - name: 'Print Branch Name'
-#   id: 'branch-name'
-#   entrypoint: 'sh'
-#   args:
-#   - '-c'
-#   - |
-#     echo "***********************"
-#     echo "$BRANCH_NAME"
-#     echo "***********************"
+- name: 'Print-Branch-Name'
+  id: 'branch-name'
+  entrypoint: 'sh'
+  args:
+  - '-c'
+  - |
+    echo "***********************"
+    echo "$BRANCH_NAME"
+    echo "***********************"
 
-- name: 'Clone GitHub Repository'
+- name: 'Clone-GitHub-Repository'
   id: 'clone-repo'
   entrypoint: 'git'
   args:
@@ -17,19 +17,19 @@ steps:
   - 'https://github.com/pRodriguez1630/terraform-infra-test.git'  
 
 
-- name: 'Terraform Init'
+- name: 'Terraform-Init'
   id: 'tf-init'
   entrypoint: 'terraform'
   args:
   - 'init'
 
-- name: 'Terraform Plan'
+- name: 'Terraform-Plan'
   id: 'tf-plan'
   entrypoint: 'terraform'
   args:
   - 'plan'
 
-- name: 'Terraform Apply (Conditional)'
+- name: 'Terraform-Apply-(Conditional)'
   id: 'tf-apply'
   entrypoint: 'terraform'
   args:
