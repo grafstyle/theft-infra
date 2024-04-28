@@ -29,3 +29,9 @@ variable "BRANCH_NAME" {
   default = "main"
   
 }
+
+variable "credentials" {
+  type = string
+  default ="rosy-acolyte-412215-15449e5d0d54.json"
+  
+}
