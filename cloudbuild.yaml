@@ -1,21 +1,21 @@
 steps:
-# - name: 'print-branch-name'
-#   id: 'branch-name'
-#   entrypoint: 'sh'
-#   args:
-#   - '-c'
-#   - |
-#     echo "***********************"
-#     echo "$BRANCH_NAME"
-#     echo "***********************"
+- name: 'print-branch-name'
+  id: 'branch-name'
+  entrypoint: 'sh'
+  args:
+  - '-c'
+  - |
+      echo "***********************"
+      echo "$BRANCH_NAME"
+      echo "***********************"
 
 - name: 'clone-github-repository'
   id: 'clone-repo'
-  entrypoint: 'git'
+  entrypoint: 'bash'
   args:
-  - 'clone'
-  - 'https://github.com/pRodriguez1630/terraform-infra-test.git'  
-
+  - '-c'
+  - |
+      git clone https://github.com/pRodriguez1630/terraform-infra-test.git
 
 - name: 'terraform-init'
   id: 'tf-init'
@@ -34,6 +34,4 @@ steps:
   entrypoint: 'terraform'
   args:
   - 'apply'
-  - '-auto-approve' 
-
-
+  - '-auto-approve'
