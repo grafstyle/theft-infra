@@ -25,7 +25,7 @@ steps:
   - |
     branch=main  # Replace with your main branch name
 
-    cd terraform-infra-test/${branch}  # Assuming branch directory structure
+    cd terraform-infra-test  # Assuming branch directory structure
 
     # Initialize Terraform
     terraform init || exit 1
@@ -113,8 +113,26 @@ steps:
       branch=main
       if [ -d "terraform-infra-test" ]; then
         cd terraform-infra-test
-        terraform init
-        terraform apply -auto-approve
+        # Capture current state to `current_state.tfstate`
+        terraform show -no-color > current_state.tfstate
+        # Extract resource names from current state
+        resources=$(jq -r '.resources | keys[]' current_state.tfstate)
+        for resource in $resources; do
+          if grep -q "\"$resource\"" current_state.tfstate; then
+            echo "*******************************************************************************"
+            echo "Resource '${resource}' already exists in Terraform state."
+            echo "Skipping creation to avoid naming conflicts."
+            echo "*******************************************************************************"
+          else
+            echo "*******************************************************************************"
+            echo "Resource '${resource}' not found in Terraform state."
+            echo "Proceeding with creation..."
+            echo "*******************************************************************************"
+            terraform apply -auto-approve
+          fi
+        done
+      terraform init
+      terraform apply -auto-approve
       else
         echo "***************************** SKIPPING APPLYING *******************************"
         echo "Branch '${branch}' does not represent an official environment."
