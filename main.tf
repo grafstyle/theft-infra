@@ -20,17 +20,17 @@ resource "google_storage_bucket" "mi_bucket" {
 }
 
 # Crear un trigger de Cloud Build y utilizar el bucket creado anteriormente
-resource "google_cloudbuild_trigger" "mi_trigger" {
-  trigger_template {
-    branch_name = "main"
-    repo_name   = "pRodriguez1630/terraform-infra-test"
-  }
+# resource "google_cloudbuild_trigger" "mi_trigger" {
+#   trigger_template {
+#     branch_name = "main"
+#     repo_name   = "pRodriguez1630/terraform-infra-test"
+#   }
   
 
-  filename = "cloudbuild.yaml"
+#   filename = "cloudbuild.yaml"
 
   
-}
+# }
 # Creación de la cuenta de servicio
 #resource "google_service_account" "my_service_account" {
 #  account_id   = "terraform-fitquesd-service"
