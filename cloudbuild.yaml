@@ -24,8 +24,8 @@ steps:
   - '-c'
   - |
       branch=main
-      if [ -d "terraform-infra-test/${branch}/" ]; then
-        cd terraform-infra-test/${branch}
+      if [ -d "terraform-infra-test" ]; then
+        cd terraform-infra-test}
         # Consultar el estado actual de los recursos
         terraform show -no-color > current_state.tfstate
         # Obtener la lista de recursos del archivo tfstate
@@ -50,8 +50,8 @@ steps:
   - '-c'
   - |
    branch=main
-      if [ -d "terraform-infra-test/${branch}/" ]; then
-        cd terraform-infra-test/${branch}
+      if [ -d "terraform-infra-test" ]; then
+        cd terraform-infra-test}
         terraform init
       else
         for dir in terraform-infra-test/*/
@@ -75,11 +75,11 @@ steps:
   - '-c'
   - |
       branch=main
-      if [ -d "terraform-infra-test/${branch}/" ]; then
+      if [ -d "terraform-infra-test" ]; then
         cd terraform-infra-test/${branch}
         terraform plan
       else
-        for dir in terraform-infra-test/*/
+        for dir in terraform-infra-test*/
         do
           cd ${dir}
           env=${dir%*/}
@@ -102,8 +102,8 @@ steps:
   - '-c'
   - |
       branch=main
-      if [ -d "terraform-infra-test/${branch}/" ]; then
-        cd terraform-infra-test/${branch}
+      if [ -d "terraform-infra-test" ]; then
+        cd terraform-infra-test
         terraform apply -auto-approve
       else
         echo "***************************** SKIPPING APPLYING *******************************"
