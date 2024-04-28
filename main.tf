@@ -23,11 +23,11 @@ resource "google_storage_bucket" "mi_bucket-v" {
   location      = var.region  # Cambia esto a tu región preferida
   force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
 }
-# resource "google_storage_bucket" "mi_bucket-v2" {
-#   name          = "mi-bucket-de-logs-v"
-#   location      = var.region  # Cambia esto a tu región preferida
-#   force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
-# }
+resource "google_storage_bucket" "mi_bucket-v2" {
+  name          = "mi-bucket-de-logs-v"
+  location      = var.region  # Cambia esto a tu región preferida
+  force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
+}
 
 # Crear un trigger de Cloud Build y utilizar el bucket creado anteriormente
 # resource "google_cloudbuild_trigger" "mi_trigger" {
