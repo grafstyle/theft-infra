@@ -1,14 +1,14 @@
 steps:
-- name: 'Print Branch Name'
-  id: 'branch-name'
-  entrypoint: 'sh'
-  args:
-  - '-c'
-  - |
-    echo "***********************"
-    echo "$BRANCH_NAME"
-    echo "***********************"
-    
+# - name: 'Print Branch Name'
+#   id: 'branch-name'
+#   entrypoint: 'sh'
+#   args:
+#   - '-c'
+#   - |
+#     echo "***********************"
+#     echo "$BRANCH_NAME"
+#     echo "***********************"
+
 - name: 'Clone GitHub Repository'
   id: 'clone-repo'
   entrypoint: 'git'

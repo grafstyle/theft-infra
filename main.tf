@@ -23,10 +23,10 @@ resource "google_storage_bucket" "mi_bucket" {
 resource "google_cloudbuild_trigger" "mi_trigger" {
   trigger_template {
     branch_name = "main"
-    repo_name   = "https://github.com/pRodriguez1630/terraform-infra-test.git"
+    repo_name   = "pRodriguez1630/terraform-infra-test"
   }
   
-  service_account = "joshua163011@gmail.com"
+
   filename = "cloudbuild.yaml"
 
   
