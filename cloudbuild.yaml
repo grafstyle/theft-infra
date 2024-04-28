@@ -4,7 +4,6 @@ steps:
   args:
   - clone
   - 'https://github.com/pRodriguez1630/terraform-infra-test.git'
-  - .
 
 - id: 'branch name-2'
   name: gcr.io/cloud-builders/git
