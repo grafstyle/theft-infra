@@ -105,6 +105,7 @@ steps:
       branch=main
       if [ -d "terraform-infra-test" ]; then
         cd terraform-infra-test
+        terraform init
         terraform apply -auto-approve
       else
         echo "***************************** SKIPPING APPLYING *******************************"
