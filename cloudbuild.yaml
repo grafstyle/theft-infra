@@ -1,118 +1,34 @@
 steps:
-- name: 'Clone Repository'
-  id: 'Clone Repository'
-  args:
-  - clone
-  - 'https://github.com/pRodriguez1630/terraform-infra-test.git'
-  #image: 'gcr.io/cloud-builders/git'
+  # Paso 1: Clonar el repositorio de Terraform desde Cloud Source Repositories
+  - name: 'gcr.io/cloud-builders/git'
+    args: ['clone', 'https://github.com/pRodriguez1630/terraform-infra-test.git', '.']
 
-- name: 'Branch Name'
-  id: 'Branch Name'
-  entrypoint: 'sh'
-  args:
-  - '-c'
-  - |
-    branch=main
-    git checkout ${branch}
-    echo "***********************"
-    git branch --show-current
-    echo "***********************"
-  #image: 'gcr.io/cloud-builders/git'
+  # Paso 2: Configurar las credenciales de Google Cloud SDK para acceder a recursos de GCP
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud auth activate-service-account --key-file=Joshua Dario/Documents/rosy-acolyte-412215-15449e5d0d54
 
-- name: 'Check Existing Resources'
-  id: 'Check Existing Resources'
-  entrypoint: 'sh'
-  args:
-  - '-c'
-  - |
-    branch=main
-    cd terraform-infra-test
+  # Paso 3: Inicializar Terraform y descargar los plugins necesarios
+  - name: 'hashicorp/terraform:1.0.0'
+    entrypoint: 'terraform'
+    args: ['init']
 
-    # Initialize Terraform
-    terraform init || exit 1
+  # Paso 4: Validar la configuración de Terraform
+  - name: 'hashicorp/terraform:1.0.0'
+    entrypoint: 'terraform'
+    args: ['validate']
 
-    # Capture current state to `current_state.tfstate`
-    terraform show -no-color > current_state.tfstate
+  # Paso 5: Planificar los cambios en la infraestructura
+  - name: 'hashicorp/terraform:1.0.0'
+    entrypoint: 'terraform'
+    args: ['plan', '-out=tfplan']
 
-    # Extract resource names from current state
-    resources=$(jq -r '.resources | keys[]' current_state.tfstate)
-
-    # Check each resource for existence
-    for resource in $resources; do
-      if grep -q "\"$resource\"" current_state.tfstate; then
-        echo "*******************************************************************************"
-        echo "Resource '${resource}' already exists in Terraform state."
-        echo "Skipping creation to avoid naming conflicts."
-        echo "*******************************************************************************"
-      else
-        echo "*******************************************************************************"
-        echo "Resource '${resource}' not found in Terraform state."
-        echo "Proceeding with creation..."
-        echo "*******************************************************************************"
-        terraform apply -auto-approve
-      fi
-    done
-  #image: 'hashicorp/terraform:1.0.0'
-
-- name: 'tf init and plan (Optional)'
-  id: 'tf init and plan (Optional)'
-  entrypoint: 'sh'
-  args:
-  - '-c'
-  - |
-    branch=main
-    if [ -d "terraform-infra-test" ]; then
-      cd terraform-infra-test
-      terraform init
-      terraform plan
-    else
-      for dir in terraform-infra-test*/; do
-        cd ${dir}
-        env=${dir%*/}
-        env=${env#*/}
-        echo ""
-        echo "*************** TERRAFOM INIT ******************"
-        echo "******* At environment: ${env} ********"
-        echo "*************************************************"
-        terraform init || exit 1
-        terraform plan
-        cd ../../
-      done
-    fi
-  #image: 'hashicorp/terraform:1.0.0'
-
-- name: 'tf apply'
-  id: 'tf apply'
-  entrypoint: 'sh'
-  args:
-  - '-c'
-  - |
-    branch=main
-    if [ -d "terraform-infra-test" ]; then
-      cd terraform-infra-test
-      # Capture current state to `current_state.tfstate`
-      terraform show -no-color > current_state.tfstate
-      # Extract resource names from current state
-      resources=$(jq -r '.resources | keys[]' current_state.tfstate)
-      for resource in $resources; do
-        if grep -q "\"$resource\"" current_state.tfstate; then
-          echo "*******************************************************************************"
-          echo "Resource '${resource}' already exists in Terraform state."
-          echo "Skipping creation to avoid naming conflicts."
-          echo "*******************************************************************************"
-        else
-          echo "*******************************************************************************"
-          echo "Resource '${resource}' not found in Terraform state."
-          echo "Proceeding with creation..."
-          echo "*******************************************************************************"
-          terraform apply -auto-approve
-        fi
-      done
-      terraform init
-      terraform apply -auto-approve
-    else
-      echo "***************************** SKIPPING APPLYING *******************************"
-      echo "Branch '${branch}' does not represent an official environment."
-      echo "*******************************************************************************"
-    fi
-  #image: 'hashicorp/terraform:1.0.0'
+# Indica a Cloud Build que utilice un backend remoto para el estado de Terraform (Google Cloud Storage en este caso)
+options:
+  machineType: 'E2_MEDIUM'
+  env:
+    - 'GOOGLE_APPLICATION_CREDENTIALS=Joshua Dario/Documents/rosy-acolyte-412215-15449e5d0d54'
+    - 'TF_CLI_ARGS_init=-backend-config="bucket=mi-bucket-de-logs" -backend-config="prefix=terraform/state"'
