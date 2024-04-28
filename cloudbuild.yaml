@@ -17,33 +17,41 @@ steps:
       git branch --show-current
       echo "***********************"
 
-- id: 'tf check-existing-resources'
+- id: 'Check Existing Resources'
   name: 'hashicorp/terraform:1.0.0'
   entrypoint: 'sh'
   args:
   - '-c'
   - |
-      branch=main
-      if [ -d "terraform-infra-test" ]; then
-        cd terraform-infra-test}
-        # Consultar el estado actual de los recursos
-        terraform init
-        terraform show -no-color > current_state.tfstate
-        # Obtener la lista de recursos del archivo tfstate
-        resources=$(terraform show -json | jq -r '.values.root_module.resources[].address')
-        # Verificar si los recursos existen en el estado actual
-        echo "$resources" | while IFS= read -r resource; do
-          if grep -q "$resource" current_state.tfstate; then
-            echo "El recurso $resource ya existe. No se requiere crearlo nuevamente."
-          else
-            echo "El recurso $resource no existe. Se procederá con la creación."
-          fi
-        done
-      else
-        echo "Directorio de Terraform no encontrado."
-        exit 1
-      fi
+    branch=main  # Replace with your main branch name
 
+    cd terraform-infra-test/${branch}  # Assuming branch directory structure
+
+    # Initialize Terraform
+    terraform init || exit 1
+
+    # Capture current state to `current_state.tfstate`
+    terraform show -no-color > current_state.tfstate
+
+    # Extract resource names from current state
+    resources=$(jq -r '.resources | keys[]' current_state.tfstate)
+
+    # Check each resource for existence
+    for resource in $resources; do
+      if grep -q "\"$resource\"" current_state.tfstate; then
+        echo "*******************************************************************************"
+        echo "Resource '${resource}' already exists in Terraform state."
+        echo "Skipping creation to avoid naming conflicts."
+        echo "*******************************************************************************"
+      else
+        echo "*******************************************************************************"
+        echo "Resource '${resource}' not found in Terraform state."
+        echo "Proceeding with creation..."
+        echo "*******************************************************************************"
+        terraform apply -auto-approve
+      fi
+    done
+    
 - id: 'tf init'
   name: 'hashicorp/terraform:1.0.0'
   entrypoint: 'sh'
