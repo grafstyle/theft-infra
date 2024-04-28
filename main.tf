@@ -35,7 +35,7 @@ resource "google_storage_bucket" "mi_bucket-1" {
   location      = var.region  # Cambia esto a tu región preferida
   force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
 }
-resource "google_storage_bucket" "mi_bucket-1" {
+resource "google_storage_bucket" "mi_bucket-4" {
   name          = "mi-de-logs-v3"
   location      = var.region  # Cambia esto a tu región preferida
   force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
