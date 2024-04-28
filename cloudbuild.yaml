@@ -16,7 +16,7 @@ steps:
       echo "***********************"
       git branch --show-current
       echo "***********************"
-      
+
 - id: 'tf check-existing-resources'
   name: 'hashicorp/terraform:1.0.0'
   entrypoint: 'sh'
@@ -31,13 +31,13 @@ steps:
         # Obtener la lista de recursos del archivo tfstate
         resources=$(terraform show -json | jq -r '.values.root_module.resources[].address')
         # Verificar si los recursos existen en el estado actual
-        while IFS= read -r resource; do
+        echo "$resources" | while IFS= read -r resource; do
           if grep -q "$resource" current_state.tfstate; then
             echo "El recurso $resource ya existe. No se requiere crearlo nuevamente."
           else
             echo "El recurso $resource no existe. Se procederá con la creación."
           fi
-        done <<< "$resources"
+        done
       else
         echo "Directorio de Terraform no encontrado."
         exit 1
