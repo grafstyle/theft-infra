@@ -67,6 +67,29 @@ steps:
         done
       fi
 
+- id: 'tf check-existing-resources'
+  name: 'hashicorp/terraform:1.0.0'
+  entrypoint: 'sh'
+  args:
+  - '-c'
+  - |
+      branch=main
+      if [ -d "terraform-infra-test/${branch}/" ]; then
+        cd terraform-infra-test/${branch}
+        # Consultar el estado actual de los recursos
+        terraform show > current_state.tfstate
+        # Analizar la salida para verificar si los recursos existen
+        if grep -q "google_storage_bucket.mi_bucket" current_state.tfstate; then
+          echo "Los recursos ya existen. No se requiere crearlos nuevamente."
+          exit 0  # Salir sin ejecutar `terraform apply`
+        else
+          echo "Los recursos no existen. Se procederá con la creación."
+        fi
+      else
+        echo "Directorio de Terraform no encontrado."
+        exit 1
+      fi
+
 - id: 'tf apply'
   name: 'hashicorp/terraform:1.0.0'
   entrypoint: 'sh'
@@ -82,5 +105,4 @@ steps:
         echo "Branch '${branch}' does not represent an official environment."
         echo "*******************************************************************************"
         terraform apply -auto-approve
-      fi      
-
+      fi
