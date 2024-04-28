@@ -41,6 +41,32 @@ steps:
         done
       fi
 
+- id: 'tf check-existing-resources'
+  name: 'hashicorp/terraform:1.0.0'
+  entrypoint: 'sh'
+  args:
+  - '-c'
+  - |
+      branch=main
+      if [ -d "terraform-infra-test/${branch}/" ]; then
+        cd terraform-infra-test/${branch}
+        # Consultar el estado actual de los recursos
+        terraform show -no-color > current_state.tfstate
+        # Obtener la lista de recursos del archivo tfstate
+        resources=$(terraform show -json | jq -r '.values.root_module.resources[].address')
+        # Verificar si los recursos existen en el estado actual
+        while IFS= read -r resource; do
+          if grep -q "$resource" current_state.tfstate; then
+            echo "El recurso $resource ya existe. No se requiere crearlo nuevamente."
+          else
+            echo "El recurso $resource no existe. Se procederá con la creación."
+          fi
+        done <<< "$resources"
+      else
+        echo "Directorio de Terraform no encontrado."
+        exit 1
+      fi
+
 - id: 'tf plan'
   name: 'hashicorp/terraform:1.0.0'
   entrypoint: 'sh'
@@ -67,28 +93,6 @@ steps:
         done
       fi
 
-- id: 'tf check-existing-resources'
-  name: 'hashicorp/terraform:1.0.0'
-  entrypoint: 'sh'
-  args:
-  - '-c'
-  - |
-      branch=main
-      if [ -d "terraform-infra-test/${branch}/" ]; then
-        cd terraform-infra-test/${branch}
-        # Consultar el estado actual de los recursos
-        terraform show > current_state.tfstate
-        # Analizar la salida para verificar si los recursos existen
-        if grep -q "google_storage_bucket.mi_bucket" current_state.tfstate; then
-          echo "Los recursos ya existen. No se requiere crearlos nuevamente."
-          exit 0  # Salir sin ejecutar `terraform apply`
-        else
-          echo "Los recursos no existen. Se procederá con la creación."
-        fi
-      else
-        echo "Directorio de Terraform no encontrado."
-        exit 1
-      fi
 
 - id: 'tf apply'
   name: 'hashicorp/terraform:1.0.0'
