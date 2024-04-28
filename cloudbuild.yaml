@@ -27,6 +27,7 @@ steps:
       if [ -d "terraform-infra-test" ]; then
         cd terraform-infra-test}
         # Consultar el estado actual de los recursos
+        terraform init
         terraform show -no-color > current_state.tfstate
         # Obtener la lista de recursos del archivo tfstate
         resources=$(terraform show -json | jq -r '.values.root_module.resources[].address')
