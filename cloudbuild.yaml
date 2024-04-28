@@ -1,36 +1,86 @@
 steps:
-# - name: 'print-branch-name'
-#   id: 'branch-name'
-#   entrypoint: 'sh'
-#   args:
-#   - '-c'
-#   - |
-#       echo "***********************"
-#       echo "$BRANCH_NAME"
-#       echo "***********************"
-
-- name: 'clone-github-repo'
-  id: 'clone-repo'
-  entrypoint: 'git'
+- id: 'clone repository'
+  name: 'gcr.io/cloud-builders/git'
   args:
-  - 'clone'
+  - clone
   - 'https://github.com/pRodriguez1630/terraform-infra-test.git'
+  - .
 
-- name: 'terraform-init'
-  id: 'tf-init'
-  entrypoint: 'terraform'
+- id: 'branch name'
+  name: gcr.io/cloud-builders/git
+  entrypoint: 'sh'
   args:
-  - 'init'
+  - '-c'
+  - |
+      branch=main
+      git checkout ${branch}
+      echo "***********************"
+      git branch --show-current
+      echo "***********************"
 
-- name: 'terraform-plan'
-  id: 'tf-plan'
-  entrypoint: 'terraform'
+- id: 'tf init'
+  name: 'hashicorp/terraform:1.0.0'
+  entrypoint: 'sh'
   args:
-  - 'plan'
+  - '-c'
+  - |
+   branch=main
+      if [ -d "terraform-infra-test/${branch}/" ]; then
+        cd terraform-infra-test/${branch}
+        terraform init
+      else
+        for dir in terraform-infra-test/*/
+        do
+          cd terraform-infra-test
+        
+          echo ""
+          echo "*************** TERRAFORM INIT ******************"
+          echo "******* At environment: ${env} ********"
+          echo "*************************************************"
+          terraform init || exit 1
+          cd ../../
+        done
+      fi
 
-- name: 'terraform-apply'
-  id: 'tf-apply'
-  entrypoint: 'terraform'
+- id: 'tf plan'
+  name: 'hashicorp/terraform:1.0.0'
+  entrypoint: 'sh'
   args:
-  - 'apply'
-  - '-auto-approve'
+  - '-c'
+  - |
+      branch=main
+      if [ -d "terraform-infra-test/${branch}/" ]; then
+        cd terraform-infra-test/${branch}
+        terraform plan
+      else
+        for dir in environments/*/
+        do
+          cd ${dir}
+          env=${dir%*/}
+          env=${env#*/}
+          echo ""
+          echo "*************** TERRAFOM PLAN ******************"
+          echo "******* At environment: ${env} ********"
+          echo "*************************************************"
+          terraform plan || exit 1
+          cd ../../
+        done
+      fi
+
+- id: 'tf apply'
+  name: 'hashicorp/terraform:1.0.0'
+  entrypoint: 'sh'
+  args:
+  - '-c'
+  - |
+      branch=main
+      if [ -d "terraform-infra-test/${branch}/" ]; then
+        cd terraform-infra-test/${branch}
+        terraform apply -auto-approve
+      else
+        echo "***************************** SKIPPING APPLYING *******************************"
+        echo "Branch '${branch}' does not represent an official environment."
+        echo "*******************************************************************************"
+      fi      
+
+      
