@@ -1,9 +1,15 @@
 # Provider de Google Cloud Platform
 provider "google" {
-  credentials = file(var.credentials)
+  #credentials = ""
   project = var.project_id
   region  = var.region
   zone    = var.zone
+}
+terraform {
+  backend "gcs" {
+    bucket  = "mi-bucket-de-logs"
+    prefix  = "terraform/state"
+  }
 }
 # resource "google_artifact_registry_repository" "example" {
 #   repository_id = "mi-repositorio-v2"
@@ -12,20 +18,13 @@ provider "google" {
 #   format = "DOCKER"  # Este ejemplo crea un repositorio de tipo Docker, pero también puedes usar otros formatos como MAVEN o NPM
 # }
 
-
 # Crear un bucket de Cloud Storage
 resource "google_storage_bucket" "mi_bucket" {
-  name          = "mi-bucket-de-logs"
+  name          = "mi-bucket-de-logs-test"
   location      = var.region  # Cambia esto a tu región preferida
   force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
 }
 
-terraform {
-  backend "gcs" {
-    bucket  = "mi-bucket-de-logs"
-    prefix  = "terraform/state"
-  }
-}
 resource "google_storage_bucket" "mi_bucket-v" {
   name          = "mi-bucket-de-logs-v"
   location      = var.region  # Cambia esto a tu región preferida

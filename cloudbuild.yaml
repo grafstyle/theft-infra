@@ -9,7 +9,7 @@ steps:
     args:
       - '-c'
       - |
-        gcloud auth activate-service-account --key-file=rosy-acolyte-412215-15449e5d0d54
+        gcloud auth activate-service-account --key-file=rosy-acolyte-412215-15449e5d0d54.json
 
   # Paso 3: Inicializar Terraform y descargar los plugins necesarios
   - name: 'hashicorp/terraform:1.0.0'
@@ -32,4 +32,4 @@ options:
   env:
     # - 'GOOGLE_APPLICATION_CREDENTIALS=Users\Joshua Dario\Documents\rosy-acolyte-412215-15449e5d0d54'
     - 'TF_CLI_ARGS_init=-backend-config="bucket=mi-bucket-de-logs" -backend-config="prefix=terraform/state"'
-    - 'GOOGLE_APPLICATION_CREDENTIALS=rosy-acolyte-412215-15449e5d0d54'
+    - 'GOOGLE_APPLICATION_CREDENTIALS=rosy-acolyte-412215-15449e5d0d54.json'

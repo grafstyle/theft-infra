@@ -30,8 +30,4 @@ variable "BRANCH_NAME" {
   
 }
 
-variable "credentials" {
-  type = string
-  default ="rosy-acolyte-412215-15449e5d0d54.json"
-  
-}
+# Define una variable para almacenar el contenido del archivo JSON
