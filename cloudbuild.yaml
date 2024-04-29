@@ -9,9 +9,9 @@ steps:
     args:
       - '-c'
       - |
-        gcloud auth activate-service-account terraform-test-account@rosy-acolyte-412215.iam.gserviceaccount.com --key-file=\Documents\rosy-acolyte-412215-15449e5d0d54'
+        gcloud auth activate-service-account terraform-test-account@rosy-acolyte-412215.iam.gserviceaccount.com --key-file "\Users\Joshua Dario\Documents\rosy-acolyte-412215-15449e5d0d54.json"
 
-  # Paso 3: Inicializar Terraform y descargar los plugins necesarios 
+  # Paso 3: Inicializar Terraform y descargar los plugins necesarios gcloud auth activate-service-account terraform-test-account@rosy-acolyte-412215.iam.gserviceaccount.com --key-file "\Users\Joshua Dario\Documents\rosy-acolyte-412215-15449e5d0d54.json"
   - name: 'hashicorp/terraform:1.0.0'
     entrypoint: 'terraform'
     args: ['init']
