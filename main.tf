@@ -1,6 +1,6 @@
 # Provider de Google Cloud Platform
 provider "google" {
-  #
+  credentials = base64decode(data.google_storage_object.credentials_json.contenido)
   project = var.project_id
   region  = var.region
   zone    = var.zone
@@ -10,6 +10,11 @@ terraform {
     bucket  = "mi-bucket-de-logs"
     prefix  = "terraform/state"
   }
+}
+
+data "google_storage_object" "credentials_json" {
+  name   = "mi-bucket-de-logs/rosy-acolyte-412215-15449e5d0d54.json"  # Ruta al archivo JSON de credenciales en el bucket
+  bucket = "mi-bucket-de-logs"  # Nombre de tu bucket de Google Cloud Storage
 }
 # resource "google_artifact_registry_repository" "example" {
 #   repository_id = "mi-repositorio-v2"
