@@ -1,6 +1,6 @@
 # Provider de Google Cloud Platform
 provider "google" {
-  credentials = jsondecode(file(var.service-account-key))
+  #
   project = var.project_id
   region  = var.region
   zone    = var.zone

@@ -31,6 +31,4 @@ variable "BRANCH_NAME" {
 }
 
 # Define una variable para almacenar el contenido del archivo JSON
-variable "service-account-key" {
-  type = string
-}
+#
