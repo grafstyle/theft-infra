@@ -1,6 +1,6 @@
 # Provider de Google Cloud Platform
 provider "google" {
-  credentials = base64decode(data.google_storage_object.credentials_json.contenido)
+  #credentials = base64decode(data.google_storage_object.credentials_json.contenido)
   project = var.project_id
   region  = var.region
   zone    = var.zone
@@ -12,10 +12,7 @@ terraform {
   }
 }
 
-data "google_storage_object" "credentials_json" {
-  name   = "mi-bucket-de-logs/rosy-acolyte-412215-15449e5d0d54.json"  # Ruta al archivo JSON de credenciales en el bucket
-  bucket = "mi-bucket-de-logs"  # Nombre de tu bucket de Google Cloud Storage
-}
+#
 # resource "google_artifact_registry_repository" "example" {
 #   repository_id = "mi-repositorio-v2"
 #   location      = var.zone  # Cambia la ubicación según tu preferencia
@@ -25,7 +22,7 @@ data "google_storage_object" "credentials_json" {
 
 # Crear un bucket de Cloud Storage
 resource "google_storage_bucket" "mi_bucket" {
-  name          = "mi-bucket-de-logs-test"
+  name          = "mi-bucket-de-logs-test-v2"
   location      = var.region  # Cambia esto a tu región preferida
   force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
 }
@@ -35,16 +32,16 @@ resource "google_storage_bucket" "mi_bucket-v" {
   location      = var.region  # Cambia esto a tu región preferida
   force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
 }
-resource "google_storage_bucket" "mi_bucket-1" {
-  name          = "mi-de-logs-v2"
-  location      = var.region  # Cambia esto a tu región preferida
-  force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
-}
-resource "google_storage_bucket" "mi_bucket-4" {
-  name          = "mi-de-logs-v3"
-  location      = var.region  # Cambia esto a tu región preferida
-  force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
-}
+# resource "google_storage_bucket" "mi_bucket-1" {
+#   name          = "mi-de-logs-v2"
+#   location      = var.region  # Cambia esto a tu región preferida
+#   force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
+# }=
+# resource "google_storage_bucket" "mi_bucket-4" {
+#   name          = "mi-de-logs-v3"
+#   location      = var.region  # Cambia esto a tu región preferida
+#   force_destroy = true           # Esto eliminará permanentemente el bucket cuando sea eliminado de Terraform
+#}
 # Crear un trigger de Cloud Build y utilizar el bucket creado anteriormente
 # resource "google_cloudbuild_trigger" "mi_trigger" {
 #   trigger_template {
