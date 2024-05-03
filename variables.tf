@@ -13,14 +13,14 @@ variable "zone" {
   default     = "us-central1-a"
 }
 
-# variable "repo_name" {
-#   description = "Repository of fitquest"
-#   default     = "https://github.com/perodriguez1630/DevOps-CI-CD.git"
-# }
+variable "repo_name" {
+  description = "Repository of fitquest"
+  default     = "https://github.com/pRodriguez1630/terraform-infra-test.git"
+}
 
 variable "name" {
     type = string
-    default = "FItquest"
+    default = "Fitquest"
   
 }
 

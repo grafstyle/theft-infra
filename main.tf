@@ -1,6 +1,6 @@
 # Provider de Google Cloud Platform
 provider "google" {
-  #credentials = base64decode(data.google_storage_object.credentials_json.contenido)
+  credentials = file("rosy-acolyte-412215-15449e5d0d54.json")
   project = var.project_id
   region  = var.region
   zone    = var.zone
@@ -11,14 +11,40 @@ terraform {
     prefix  = "terraform/state"
   }
 }
+# resource "google_cloudbuild_trigger" "mi-trigger" {
+#   trigger_template {
+#     # Comentario explicativo de la rama a monitorear
+#     branch_name = "main"
+#     # Comentario explicativo del repositorio
+#     repo_name   = var.repo_name
+#   }
 
-#
-# resource "google_artifact_registry_repository" "example" {
-#   repository_id = "mi-repositorio-v2"
-#   location      = var.zone  # Cambia la ubicación según tu preferencia
+#   service_account = "terraform-test-account@rosy-acolyte-412215.iam.gserviceaccount.com"
+#   filename = "cloudbuild.yaml"
+#   depends_on = [ 
+#         google_project_iam_member.act_as,
+#         google_project_iam_member.logs_writer
+#    ]
 
-#   format = "DOCKER"  # Este ejemplo crea un repositorio de tipo Docker, pero también puedes usar otros formatos como MAVEN o NPM
 # }
+
+# resource "google_project_iam_member" "act_as" {
+#   project = var.project_id
+#   role    = "roles/iam.serviceAccountUser"
+#   member  = "serviceAccount:terraform-test-account@rosy-acolyte-412215.iam.gserviceaccount.com"
+# }
+# resource "google_project_iam_member" "logs_writer" {
+#   project = var.project_id
+#   role    = "roles/logging.logWriter"
+#   member  = "serviceAccount:terraform-test-account@rosy-acolyte-412215.iam.gserviceaccount.com"
+# }
+#
+resource "google_artifact_registry_repository" "example" {
+  repository_id = "mi-repositorio-v2"
+  location      = var.region  # Cambia la ubicación según tu preferencia
+
+  format = "DOCKER"  # Este ejemplo crea un repositorio de tipo Docker, pero también puedes usar otros formatos como MAVEN o NPM
+}
 
 # Crear un bucket de Cloud Storage
 resource "google_storage_bucket" "mi_bucket" {
