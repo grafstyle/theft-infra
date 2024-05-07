@@ -1,15 +1,15 @@
 steps:
   # Paso 1: Clonar el repositorio de Terraform desde Cloud Source Repositories
   - name: 'gcr.io/cloud-builders/git'
-    args: ['clone', 'https://github.com/pRodriguez1630/terraform-infra-test.git']
+    args: ['clone', 'https://github.com/grafstyle/theft-infra.git']
 
-  # Paso 2: Configurar las credenciales de Google Cloud SDK para acceder a recursos de GCP
-  - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        export GOOGLE_APPLICATION_CREDENTIALS="gs://mi-bucket-de-logs/rosy-acolyte-412215-15449e5d0d54.json"
+  # # Paso 2: Configurar las credenciales de Google Cloud SDK para acceder a recursos de GCP
+  # - name: 'gcr.io/cloud-builders/gcloud'
+  #   entrypoint: 'bash'
+  #   args:
+  #     - '-c'
+  #     - |
+  #       export GOOGLE_APPLICATION_CREDENTIALS="gs://mi-bucket-de-logs/rosy-acolyte-412215-15449e5d0d54.json"
         
 
   # Paso 3: Inicializar Terraform y descargar los plugins necesarios 
